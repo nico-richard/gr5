@@ -1,0 +1,28 @@
+@import "../styles/colors"
+
+.post
+    padding: 1rem
+    border: 1px solid $black-primary
+    background-color: $black-secondary
+    color: $white-primary
+    border-radius: 10px
+    width: 350px
+    height: auto
+    .image
+        position: relative
+        height: 250px
+    .description
+        white-space: nowrap
+        overflow: hidden
+        text-overflow: ellipsis
+    h2
+        margin: 10px 0 0 10%
+    img
+        box-shadow: 5px 5px $white-primary
+        border-radius: 10px
+        transition: all 0.5s
+        &:hover
+            box-shadow: none
+            cursor: pointer
+    @media screen and ( max-width: 576px )
+        width: 250px

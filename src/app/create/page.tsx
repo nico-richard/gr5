@@ -47,7 +47,7 @@ const CreatePostPage = () => {
         ></textarea>
         <input
           type="file"
-          onChange={(e) => setImage(e.target.files[0] || null)}
+          onChange={(e) => setImage(e.target.files![0] || null)}
           required
         />
         <button type="submit">Submit</button>
