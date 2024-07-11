@@ -1,0 +1,38 @@
+@import "../styles/colors"
+
+.form
+    display: flex
+    flex-direction: column
+    width: 50%
+
+    label
+        font-weight: bold
+        margin-bottom: 8px
+        display: block
+
+    input[type='text'],
+    textarea
+        width: 100%
+        padding: 10px
+        font-size: 16px
+        border: 1px solid $white-primary
+        border-radius: 4px
+        transition: border-color 0.3s ease
+
+        &:focus
+            outline: none
+            border-color: $black-secondary
+
+    input[type='file']
+        padding: 10px
+        font-size: 16px
+
+    button[type='submit']
+        background-color: $black-secondary
+        color: $white-primary
+        padding: 12px 20px
+        font-size: 16px
+        border: none
+        border-radius: 4px
+        cursor: pointer
+        transition: background-color 0.3s ease

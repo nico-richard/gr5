@@ -1,26 +1,34 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import styles from "./PostList.module.sass";
-import { PostModel } from "@/app/models/Post";
-import axios from "axios";
+import { PostModel } from "@/models/Post";
 import Post from "./Post";
 import Spinner from "./Spinner";
 import { useRouter } from "next/navigation";
 
-const PostList = () => {
-  const [posts, setPosts] = useState<PostModel[]>([]);
+interface PostListProps {
+  posts: PostModel[];
+  getFirstImageOfDay: (post: PostModel) => Promise<string>;
+}
+
+const PostList: React.FC<PostListProps> = ({ posts, getFirstImageOfDay }) => {
   const router = useRouter();
+  const [imageNames, setImageNames] = useState<string[]>([]);
 
   useEffect(() => {
-    axios
-      .get("/api/posts")
-      .then((response) => {
-        setPosts(response.data.posts);
-      })
-      .catch((error) => {
-        console.error("There was an error fetching the posts!", error);
-      });
-  }, []);
+    const fetchImages = async () => {
+      const promises = posts.map((post) => getFirstImageOfDay(post));
+
+      try {
+        const results = await Promise.all(promises);
+        setImageNames(results);
+      } catch (error) {
+        console.error("Error fetching images:", error);
+      }
+    };
+
+    fetchImages();
+  }, [posts, getFirstImageOfDay]);
 
   const onPostClick = (id: number) => {
     router.push(`/post/${id}`);
@@ -32,14 +40,13 @@ const PostList = () => {
         {!posts ? (
           <Spinner />
         ) : (
-          posts.map((post) => (
+          posts.map((post, index) => (
             <Post
-              key={post.id}
-              id={post.id}
-              title={post.title}
+              key={index}
+              day={post.day}
               description={post.description}
-              imageUrl={post.imageUrl}
               onPostClick={onPostClick}
+              imageName={imageNames[index]}
             />
           ))
         )}

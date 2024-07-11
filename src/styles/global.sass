@@ -22,3 +22,31 @@ body
             max-width: 120px
         @media screen and ( max-width: 576px )
             font-size: 2rem
+    .add-button
+        margin-bottom: 1rem
+    button
+        padding: 15px 20px
+        background-color: $black-secondary
+        color: $white-primary
+        border: none
+        border-radius: 10px
+        font-family: inherit
+        &:hover
+            background-color: $black-primary
+            cursor: pointer
+    .post-details
+        .buttons
+            display: flex
+            gap: 1rem
+        .photo-list
+            display: flex
+            flex-wrap: wrap
+            gap: 1rem
+            img
+                border-radius: 10px
+                height: auto
+                max-width: 100%
+    @media screen and ( max-width: 576px )
+        .buttons
+            flex-direction: column
+            gap: 0.5rem

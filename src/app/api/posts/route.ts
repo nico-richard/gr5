@@ -1,34 +1,22 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { NextResponse } from "next/server";
-import prisma from "../../../../lib/prisma";
+import { NextRequest, NextResponse } from "next/server";
+import sqlite3 from "sqlite3";
+import { open, Database } from "sqlite";
 
-export async function GET() {
-  try {
-    const posts = await prisma.post.findMany();
-    return NextResponse.json({ posts }, { status: 200 });
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
-  }
-}
+let db: Database | null = null;
 
-export async function POST(req: NextApiRequest, res: NextApiResponse) {
-  try {
-    const { title, description, imageUrl } = req.body;
-    const post = await prisma.post.create({
-      data: {
-        title,
-        description,
-        imageUrl,
-      },
+export async function GET(req: NextRequest, res: NextResponse) {
+  // Check if the database instance has been initialized
+  if (!db) {
+    // If the database instance is not initialized, open the database connection
+    db = await open({
+      filename: "./posts.db", // Specify the database file path
+      driver: sqlite3.Database, // Specify the database driver (sqlite3 in this case)
     });
-    return NextResponse.json({ post }, { status: 201 });
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
   }
+
+  // Perform a database query to retrieve all items from the "items" table
+  const posts = await db.all("SELECT * FROM posts");
+
+  // Return the items as a JSON response with status 200
+  return NextResponse.json({ posts }, { status: 200 });
 }
