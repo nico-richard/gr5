@@ -6,6 +6,8 @@ import { PostModel } from "../models/Post";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { response } from "express";
+import { getPhotoServerUrl } from "@/constants";
+import { PhotoModel } from "@/models/Photo";
 
 const HomePage = () => {
   const [posts, setPosts] = useState<PostModel[]>([]);
@@ -22,10 +24,12 @@ const HomePage = () => {
       });
   }, []);
 
-  const getFirstImageOfDay = (post: PostModel): Promise<string> => {
-    return axios.get(`/api/photosForDay/${post.day}`).then((response) => {
-      return response.data.photos[0];
-    });
+  const getFirstImageOfDay = (post: PostModel): Promise<PhotoModel> => {
+    return axios
+      .get<{ photos: PhotoModel[] }>(`/api/photosForDay/${post.day}`)
+      .then((response) => {
+        return response.data.photos[0];
+      });
   };
 
   return (
@@ -44,14 +48,6 @@ const HomePage = () => {
           />
         </div>
       </h1>
-      <button
-        onClick={() => {
-          router.push("/new");
-        }}
-        className="add-button"
-      >
-        Ajouter
-      </button>
       <PostList
         posts={posts}
         getFirstImageOfDay={getFirstImageOfDay}

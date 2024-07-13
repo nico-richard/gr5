@@ -14,17 +14,17 @@ export async function POST(req: NextRequest) {
   }
 
   const existingPost = await db.get(
-    "SELECT * FROM posts WHERE day = ?",
+    "SELECT * FROM post WHERE day = ?",
     data.day
   );
 
   if (!existingPost) {
     const post = await db.run(
-      "INSERT INTO posts(day, description) VALUES (?, ?)",
+      "INSERT INTO post(day, description) VALUES (?, ?)",
       data.day,
       data.description
     );
     return NextResponse.json({ post }, { status: 200 });
   }
-  return NextResponse.json({ error: "Post already exists" }, { status: 500 });
+  return NextResponse.json({ error: "Post already exists" }, { status: 200 });
 }

@@ -1,0 +1,1 @@
+export const getPhotoServerUrl = "http://localhost:5000/getPhoto/"

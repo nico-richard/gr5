@@ -1,28 +1,23 @@
-import fs from "fs";
 import { NextRequest, NextResponse } from "next/server";
-import path from "path";
+import sqlite3 from "sqlite3";
+import { open, Database } from "sqlite";
+import { PhotoModel } from "@/models/Photo";
+
+let db: Database | null = null;
 
 export async function GET(
   req: NextRequest,
   { params }: { params: { day: string } }
 ) {
-  if (!params.day) {
-    return NextResponse.json({ error: "Date is required" }, { status: 400 });
-  }
-
-  try {
-    const publicDirectoryPath = path.join(process.cwd(), "public/uploads");
-    const files = await fs.readdirSync(publicDirectoryPath);
-
-    const photos = files.filter((file) => {
-      return file.split("_")[0] === params.day;
+  if (!db) {
+    db = await open({
+      filename: "./posts.db",
+      driver: sqlite3.Database,
     });
-
-    return NextResponse.json({ photos }, { status: 200 });
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Failed to read directory" },
-      { status: 500 }
-    );
   }
+  const photos = await db.all<PhotoModel[]>(
+    "SELECT * FROM photo WHERE id_post = ?",
+    params.day
+  );
+  return NextResponse.json({ photos }, { status: 200 });
 }

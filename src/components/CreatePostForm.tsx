@@ -1,9 +1,8 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import styles from "./CreatePostForm.module.sass";
-import { PostModel } from "@/models/Post";
 
 interface CreatePostFormProps {
-  uploadFiles: (
+  handleSubmit: (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     fileInput: React.RefObject<HTMLInputElement>,
     dayInput: React.RefObject<HTMLInputElement>,
@@ -12,7 +11,7 @@ interface CreatePostFormProps {
   ) => Promise<void>;
 }
 
-const CreatePostForm: React.FC<CreatePostFormProps> = ({ uploadFiles }) => {
+const CreatePostForm: React.FC<CreatePostFormProps> = ({ handleSubmit }) => {
   const formRef = useRef<HTMLFormElement>(null);
   const fileInput = useRef<HTMLInputElement>(null);
   const dayInput = useRef<HTMLInputElement>(null);
@@ -22,7 +21,7 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ uploadFiles }) => {
     <form className={styles.form} ref={formRef}>
       <label>
         <span>Jour</span>
-        <input type="text" name="day" ref={dayInput} required />
+        <input type="number" name="day" ref={dayInput} required />
       </label>
       <label>
         <span>Description</span>
@@ -35,12 +34,25 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ uploadFiles }) => {
       <button
         type="submit"
         onClick={(event) =>
-          uploadFiles(event, fileInput, dayInput, formRef, descriptionInput)
+          handleSubmit(event, fileInput, dayInput, formRef, descriptionInput)
         }
       >
         Submit
       </button>
     </form>
+    // <form
+    //   method="POST"
+    //   action="http://localhost:5000/uploadPhotos"
+    //   encType="multipart/form-data"
+    // >
+    //   <div>
+    //     <label>Upload photos</label>
+    //     <input type="file" name="files" multiple required />
+    //   </div>
+    //   <div>
+    //     <input type="submit" value="Upload" />
+    //   </div>
+    // </form>
   );
 };
 

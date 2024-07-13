@@ -15,7 +15,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
   }
 
   // Perform a database query to retrieve all items from the "items" table
-  const posts = await db.all("SELECT * FROM posts");
+  const posts = await db.all("SELECT * FROM post");
 
   // Return the items as a JSON response with status 200
   return NextResponse.json({ posts }, { status: 200 });

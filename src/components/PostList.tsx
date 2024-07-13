@@ -5,10 +5,11 @@ import { PostModel } from "@/models/Post";
 import Post from "./Post";
 import Spinner from "./Spinner";
 import { useRouter } from "next/navigation";
+import { PhotoModel } from "@/models/Photo";
 
 interface PostListProps {
   posts: PostModel[];
-  getFirstImageOfDay: (post: PostModel) => Promise<string>;
+  getFirstImageOfDay: (post: PostModel) => Promise<PhotoModel>;
 }
 
 const PostList: React.FC<PostListProps> = ({ posts, getFirstImageOfDay }) => {
@@ -18,10 +19,9 @@ const PostList: React.FC<PostListProps> = ({ posts, getFirstImageOfDay }) => {
   useEffect(() => {
     const fetchImages = async () => {
       const promises = posts.map((post) => getFirstImageOfDay(post));
-
       try {
         const results = await Promise.all(promises);
-        setImageNames(results);
+        setImageNames(results.map((result) => result?.name));
       } catch (error) {
         console.error("Error fetching images:", error);
       }

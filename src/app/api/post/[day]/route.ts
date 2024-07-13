@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import sqlite3 from "sqlite3";
 import { open, Database } from "sqlite";
+import { PostModel } from "@/models/Post";
 
 let db: Database | null = null;
 
@@ -8,18 +9,34 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { day: string } }
 ) {
-  // Check if the database instance has been initialized
   if (!db) {
-    // If the database instance is not initialized, open the database connection
     db = await open({
-      filename: "./posts.db", // Specify the database file path
-      driver: sqlite3.Database, // Specify the database driver (sqlite3 in this case)
+      filename: "./posts.db",
+      driver: sqlite3.Database,
     });
   }
-
-  // Perform a database query to retrieve all items from the "items" table
-  const post = await db.get("SELECT * FROM posts WHERE day = ?", params.day);
-
-  // Return the items as a JSON response with status 200
+  const post = await db.get<PostModel>(
+    "SELECT * FROM post WHERE day = ?",
+    params.day
+  );
   return NextResponse.json({ post }, { status: 200 });
+}
+
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: { day: string } }
+) {
+  const data: { day: number; description: string } = await req.json();
+  if (!db) {
+    db = await open({
+      filename: "./posts.db",
+      driver: sqlite3.Database,
+    });
+  }
+  const result = await db!.run(
+    "UPDATE post SET description = ? WHERE id = ?",
+    data.description,
+    data.day
+  );
+  return NextResponse.json({ result }, { status: 200 });
 }

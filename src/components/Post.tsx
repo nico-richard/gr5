@@ -2,6 +2,9 @@
 import React, { useEffect, useState } from "react";
 import styles from "./Post.module.sass";
 import Image from "next/image";
+import axios from "axios";
+import { getPhotoServerUrl } from "@/constants";
+import { PhotoModel } from "@/models/Photo";
 
 interface PostProps {
   day: string;
@@ -17,14 +20,19 @@ const Post: React.FC<PostProps> = ({
   onPostClick,
 }) => {
   const [image, setImage] = useState<string>("");
-  console.log(process.cwd());
 
   useEffect(() => {
-    const getImage = async (name: string) => {
-      setImage(await import(`/public/uploads/${name}`));
-    };
-    imageName && getImage(imageName);
-  }, [imageName]);
+    axios
+      .get<{ photos: PhotoModel[] }>(`/api/photosForDay/${day}`)
+      .then((response) => {
+        if (response.data.photos.length > 0) {
+          setImage(response.data.photos[0].name);
+        }
+      })
+      .catch((error) => {
+        console.error("There was an error fetching the posts!", error);
+      });
+  }, [day, image]);
 
   return (
     <div className={styles.post} onClick={() => onPostClick(+day)}>
@@ -32,7 +40,13 @@ const Post: React.FC<PostProps> = ({
       <p className={styles.description}>{description}</p>
       {imageName ? (
         <div className={styles.imageContainer}>
-          <Image src={image} alt={day} fill sizes="50vw" priority />
+          <Image
+            src={`${getPhotoServerUrl}${image}`}
+            alt={day}
+            fill
+            sizes="50vw"
+            priority
+          />
         </div>
       ) : null}
     </div>

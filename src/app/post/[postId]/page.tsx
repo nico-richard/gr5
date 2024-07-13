@@ -5,6 +5,8 @@ import axios from "axios";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Spinner from "@/components/Spinner";
+import { getPhotoServerUrl } from "@/constants";
+import { PhotoModel } from "@/models/Photo";
 
 const PostDetails = ({ params }: { params: { postId: string } }) => {
   const [post, setPost] = useState<PostModel | null>(null);
@@ -25,9 +27,9 @@ const PostDetails = ({ params }: { params: { postId: string } }) => {
       });
 
     axios
-      .get(`/api/photosForDay/${params.postId}`)
+      .get<{ photos: PhotoModel[] }>(`/api/photosForDay/${params.postId}`)
       .then((response) => {
-        setPhotosForDay(response.data.photos);
+        setPhotosForDay(response.data.photos.map((photo) => photo.name));
       })
       .catch((error) => {
         console.error("There was an error fetching the posts!", error);
@@ -60,7 +62,7 @@ const PostDetails = ({ params }: { params: { postId: string } }) => {
               photosForDay.map((photo, index) => (
                 <Image
                   key={index}
-                  src={`/uploads/${photo}`}
+                  src={`${getPhotoServerUrl}${photo}`}
                   alt={`Photo ${photo}`}
                   width={600}
                   height={400}

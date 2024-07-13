@@ -1,0 +1,19 @@
+@import "../styles/colors"
+
+.homeButton
+    margin-bottom: 2rem
+.form
+    display: flex
+    flex-direction: column
+    width: 50%
+    gap: 1rem
+    @media screen and ( max-width: 576px )
+        width: 100%
+    & label
+        display: flex
+        flex-direction: column
+        gap: 0.5rem
+    & input, textarea
+        border: 1px solid $black-primary
+        border-radius: 5px
+        padding: 10px 15px

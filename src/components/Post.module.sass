@@ -7,7 +7,8 @@
     color: $white-primary
     border-radius: 10px
     width: 350px
-    height: auto
+    &:hover
+        cursor: pointer
     .imageContainer
         position: relative
         height: 250px
@@ -23,6 +24,5 @@
         transition: all 0.5s
         &:hover
             box-shadow: none
-            cursor: pointer
     @media screen and ( max-width: 576px )
         width: 250px
