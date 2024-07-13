@@ -37,7 +37,7 @@ const UploadForm: React.FC = () => {
 
     try {
       await axios
-        .post("http://0.0.0.0:5000/uploadPhotos", formData, {
+        .post("/serverApi/uploadPhotos", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
